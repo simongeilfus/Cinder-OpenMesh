@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="OpenMesh"
+	id="sg.cinder.openmesh"
+	author="Simon Geilfus"
+	summary="OpenMesh library for Cinder"
+	>
+	<supports os="macosx" />
+	<includePath system="true">include</includePath>
+	<staticLibrary>libs/macosx/libOpenMeshCoreStatic.a</staticLibrary>
+	<staticLibrary>libs/macosx/libOpenMeshToolsStatic.a</staticLibrary>
+</block>
+</cinder>
