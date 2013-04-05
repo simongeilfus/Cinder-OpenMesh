@@ -6,6 +6,7 @@
 #define OM_STATIC_BUILD
 
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
+#include <OpenMesh/Tools/Subdivider/Uniform/CatmullClarkT.hh>
 
 using namespace ci;
 using namespace ci::app;
@@ -13,7 +14,7 @@ using namespace std;
 
 typedef OpenMesh::PolyMesh_ArrayKernelT<>  Mesh;
 
-class OpenMeshTutorial01App : public AppNative {
+class SubdivideTestApp : public AppNative {
 public:
 	void setup();
 	void update();
@@ -26,7 +27,7 @@ public:
     MayaCamUI       mMayaCam;
 };
 
-void OpenMeshTutorial01App::setup()
+void SubdivideTestApp::setup()
 {
     // Setup Camera
     CameraPersp cam = CameraPersp(getWindowWidth(), getWindowHeight(), 60, 2.0f, 5000.0f);
@@ -100,12 +101,17 @@ void OpenMeshTutorial01App::setup()
     mesh.add_face(face_vhandles);
     
     
-    // triangulate faces
+    // Subdivide 6 times
+    OpenMesh::Subdivider::Uniform::CatmullClarkT<Mesh> catmull;
     
+    catmull.attach(mesh);
+    catmull( 6 );
+    catmull.detach();
+    
+    // triangulate faces
     mesh.triangulate();
     
     // Convert to Cinder TriMesh
-    
     for( Mesh::ConstVertexIter vertex = mesh.vertices_begin(); vertex != mesh.vertices_end(); ++vertex ){
         Mesh::Point  point   = mesh.point( vertex.handle() );
         mTriMesh.appendVertex( Vec3f( point[0], point[1], point[2] ) );
@@ -121,11 +127,11 @@ void OpenMeshTutorial01App::setup()
     }
 }
 
-void OpenMeshTutorial01App::update()
+void SubdivideTestApp::update()
 {
 }
 
-void OpenMeshTutorial01App::draw()
+void SubdivideTestApp::draw()
 {
 	// clear out the window with black
 	gl::clear( Color( 0, 0, 0 ) );
@@ -144,13 +150,13 @@ void OpenMeshTutorial01App::draw()
     gl::disableWireframe();
 }
 
-void OpenMeshTutorial01App::mouseDown( MouseEvent event )
+void SubdivideTestApp::mouseDown( MouseEvent event )
 {
     mMayaCam.mouseDown( event.getPos() );
 }
 
-void OpenMeshTutorial01App::mouseDrag( MouseEvent event )
+void SubdivideTestApp::mouseDrag( MouseEvent event )
 {
     mMayaCam.mouseDrag( event.getPos(), event.isLeftDown(), event.isMiddleDown(), event.isRightDown() );
 }
-CINDER_APP_NATIVE( OpenMeshTutorial01App, RendererGl )
+CINDER_APP_NATIVE( SubdivideTestApp, RendererGl )
